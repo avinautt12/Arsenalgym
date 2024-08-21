@@ -79,7 +79,7 @@ const snackbar = ref({
 });
 
 const mostrarproductos = () => {
-  fetch('http://mipagina.com/productos')
+  fetch('http://mipagina.com/adminproductos')
     .then(response => response.json())
     .then(json => {
       if (json.status === 200) {

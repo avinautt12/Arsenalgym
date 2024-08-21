@@ -18,6 +18,8 @@ import AdminEmpleadosView from '@/views/AdminEmpleadosView.vue'
 import AdminRegistrarEmpleadoView from '@/views/AdminRegistrarEmpleadoView.vue'
 import PagosView from '@/views/PagosView.vue'
 import AdminProductosView from '@/views/AdminProductosView.vue'
+import AdminClasesView from '@/views/AdminClasesView.vue'
+import AdminAsistenciasView from '@/views/AdminAsistenciasView.vue'
 
 
 
@@ -129,6 +131,16 @@ const router = createRouter({
       path: '/clases',
       name: 'clases',
       component: ClasesView
+    },
+    {
+      path: '/adminclases',
+      name: 'adminclases',
+      component: AdminClasesView
+    },
+    {
+      path: '/asistencia',
+      name: 'asistencia',
+      component: AdminAsistenciasView
     },
     {
       path: '/membresia',
