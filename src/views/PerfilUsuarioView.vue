@@ -9,7 +9,7 @@
           <v-card-text class="info">
             <p><strong>Nombre:</strong> {{ usuario?.nombre }}</p>
             <p><strong>Correo:</strong> {{ usuario?.correo }}</p>
-            <p><strong>Fecha de Registro:</strong> {{ usuario?.fecha_registro }}</p>
+            <p><strong>Fecha de Registro:</strong> {{ usuario?.FECHA_REGISTRO }}</p>
           </v-card-text>
         </v-card>
       </div>

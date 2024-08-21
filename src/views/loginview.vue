@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <v-app>
     <v-layout class="rounded rounded-md" style="min-height: 100vh; background-color: #f5f5f5;">
