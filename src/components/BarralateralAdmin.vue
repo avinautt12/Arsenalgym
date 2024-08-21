@@ -5,7 +5,7 @@
         <router-link to="empleados"><v-btn class="botones" @mouseover="activarColorGris()" @mouseleave="restaurarColorboton()" :color="coloresBotones1">Empleados</v-btn> </router-link> 
         <router-link to="socios"><v-btn class="botones" @mouseover="activarColorGris()" @mouseleave="restaurarColorboton()" :color="coloresBotones1">Socios</v-btn> </router-link> 
         <router-link to="adminproductos"><v-btn class="botones" @mouseover="activarColorGris()" @mouseleave="restaurarColorboton()" :color="coloresBotones1">Productos</v-btn></router-link>   
-        <router-link to="clases"><v-btn class="botones" @mouseover="activarColorGris()" @mouseleave="restaurarColorboton()" :color="coloresBotones1">Clases</v-btn> </router-link>
+        <router-link to="adminclases"><v-btn class="botones" @mouseover="activarColorGris()" @mouseleave="restaurarColorboton()" :color="coloresBotones1">Clases</v-btn> </router-link>
         <router-link to="/"><v-btn class="botonSalir" @mouseover="activarRojo()" @mouseleave="restaurarRojo()" :color="colorSalir">Salir</v-btn> </router-link> 
       </aside>
     </div>
