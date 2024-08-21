@@ -202,4 +202,6 @@ const registrar = async () => {
   font-weight: bold;
   margin-bottom: 20px;
 }
+
+
 </style>

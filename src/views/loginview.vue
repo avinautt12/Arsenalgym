@@ -102,7 +102,7 @@ const ingresarFormulario1 = async () => {
 
     const result = await response.json();
 
-    if (result.status === 200 && result.msg === "success") {
+    if (result.status === 200) {
       localStorage.setItem('token', result.data._token);
       userStore.setUsuario(result.data.usuario);
       router.push({ name: 'perfilusuario' });
