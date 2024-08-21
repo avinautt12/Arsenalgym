@@ -15,7 +15,7 @@
               </v-card-subtitle>
             </v-card>
             <v-img src="/campeones.jpeg" class="camp"></v-img>
-            <v-btn class="pago">Inscribirme a una clase</v-btn>
+            <router-link to="/clasesinscripcion"> <v-btn class="pago">Inscribirme a una clase</v-btn> </router-link>
           </v-col>
         </v-row>
       </v-container>

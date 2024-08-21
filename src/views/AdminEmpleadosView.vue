@@ -73,30 +73,38 @@ deleteDialog.value = true;
 };
 
 const deleteEmpleado = () => {
-if (!deleteId.value) {
-  alert('Por favor, ingresa un ID del producto.');
-  return;
-}
+  if (!deleteId.value) {
+    alert('Por favor, ingresa un ID del empleado.');
+    return;
+  }
 
-fetch(`http://mipagina.com/empleado/eliminar?id=${deleteId.value}`, {
-  method: 'DELETE',
-})
-  .then(response => {
-    return response.json(); // Asegúrate de que la respuesta sea JSON
+  // Verificar si el ID existe en la lista de empleados
+  const empleadoExiste = empleados.value.some(empleado => empleado.id === deleteId.value);
+  if (!empleadoExiste) {
+    alert('El ID del empleado ingresado no existe.');
+    return;
+  }
+
+  fetch(`http://mipagina.com/empleado/eliminar?id=${deleteId.value}`, {
+    method: 'DELETE',
   })
-  .then(json => {
-    if (json.success) {
-      alert('Empleado eliminado con éxito');
-      deleteDialog.value = false;
-      mostrarproductos(); // Refrescar la lista de productos
-    } else {
-      alert('Error al eliminar el Empleado: ' + json.message);
-    }
-  })
-  .catch(error => {
-    alert('Error al eliminar el Empleado: ' + error.message);
-  });
+    .then(response => {
+      return response.json(); // Asegúrate de que la respuesta sea JSON
+    })
+    .then(json => {
+      if (json.success) {
+        alert('Empleado eliminado con éxito');
+        deleteDialog.value = false;
+        mostrarempleados(); // Refrescar la lista de empleados
+      } else {
+        alert('Error al eliminar el empleado: ' + json.message);
+      }
+    })
+    .catch(error => {
+      alert('Error al eliminar el empleado: ' + error.message);
+    });
 };
+
 
 onMounted(() => {
   mostrarempleados();
