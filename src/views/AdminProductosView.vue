@@ -58,6 +58,17 @@
       {{ snackbar.message }}
     </v-snackbar>
   </div>
+
+  <v-snackbar
+  v-model="snackbar.show"
+  :timeout="4000"
+  :color="snackbar.color"
+  top
+  multi-line
+>
+  {{ snackbar.message }}
+</v-snackbar>
+
 </template>
 
 <script setup>
@@ -107,6 +118,17 @@ const deleteProducto = () => {
     snackbar.value = {
       show: true,
       message: 'Por favor, ingresa un ID del producto.',
+      color: 'error'
+    };
+    return;
+  }
+
+  // Verificar si el ID existe en la lista de productos
+  const productoExiste = productos.value.some(producto => producto.id === deleteId.value);
+  if (!productoExiste) {
+    snackbar.value = {
+      show: true,
+      message: 'El ID del producto ingresado no existe.',
       color: 'error'
     };
     return;
