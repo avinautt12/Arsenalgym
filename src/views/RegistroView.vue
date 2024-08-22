@@ -81,7 +81,7 @@
             <router-link to="Login">
               <v-btn color="blue" :disabled="!formCompleto" @click="registrar">
                 Registrarse
-              </v-btn>
+               </v-btn>
             </router-link>
           </v-card-actions>
         </v-card>
@@ -107,18 +107,6 @@ const confirmarContrasena = ref('');
 const router = useRouter();
 
 const userStore = useUserStore();
-
-// Función para calcular la edad a partir de la fecha de nacimiento
-const calcularEdad = (fechaNacimiento) => {
-  const hoy = new Date();
-  const fechaNac = new Date(fechaNacimiento);
-  let edad = hoy.getFullYear() - fechaNac.getFullYear();
-  const mes = hoy.getMonth() - fechaNac.getMonth();
-  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
-    edad--;
-  }
-  return edad;
-};
 
 const datosBasicosCompletos = computed(() => {
   return (

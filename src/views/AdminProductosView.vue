@@ -123,17 +123,6 @@ const deleteProducto = () => {
     return;
   }
 
-  // Verificar si el ID existe en la lista de productos
-  const productoExiste = productos.value.some(producto => producto.id === deleteId.value);
-  if (!productoExiste) {
-    snackbar.value = {
-      show: true,
-      message: 'El ID del producto ingresado no existe.',
-      color: 'error'
-    };
-    return;
-  }
-
   fetch(`http://mipagina.com/producto/eliminar?id=${deleteId.value}`, {
     method: 'DELETE',
   })
@@ -146,10 +135,8 @@ const deleteProducto = () => {
           color: 'success'
         };
         deleteDialog.value = false;
-
-        setTimeout(() => {
-          mostrarproductos();
-        }, 2000);
+        deleteId.value = ''; // Limpiar el ID después de eliminar
+        mostrarproductos(); // Refrescar la lista de productos
       } else {
         snackbar.value = {
           show: true,
@@ -166,7 +153,6 @@ const deleteProducto = () => {
       };
     });
 };
-
 onMounted(() => {
   mostrarproductos();
 });
@@ -223,4 +209,4 @@ onMounted(() => {
   text-decoration: none;
   color: inherit;
 }
-</style>
+</style>   

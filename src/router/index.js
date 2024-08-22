@@ -52,8 +52,8 @@ const router = createRouter({
       component: InbodyView
     },
     {
-      path: '/admininicio',
-      name: 'admininicio',
+      path: '/AdminInicio',
+      name: 'AdminInicio',
       component: AdminInicioView
     },
     {
