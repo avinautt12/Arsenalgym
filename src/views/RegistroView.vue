@@ -9,13 +9,14 @@
             Registro
           </v-card-title>
           <v-card-text>
-            <v-form ref="form">
+            <v-form ref="form" v-model="valid" lazy-validation>
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="nombre"
                     label="Nombre"
                     :rules="[v => !!v || 'Nombre es requerido']"
+                    required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -23,22 +24,25 @@
                     v-model="apellidos"
                     label="Apellidos"
                     :rules="[v => !!v || 'Apellidos son requeridos']"
+                    required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                <v-text-field
-                 v-model="fechaNacimiento"
-                 label="Fecha de Nacimiento"
-                 type="date"
-                 :rules="[v => !!v || 'Fecha de nacimiento es requerida', v => calcularEdad(v) >= 18 || 'Debes tener al menos 18 años']"
-                 ></v-text-field>
-                </v-col> 
+                  <v-text-field
+                    v-model="fechaNacimiento"
+                    label="Fecha de Nacimiento"
+                    type="date"
+                    :rules="[v => !!v || 'Fecha de nacimiento es requerida', v => calcularEdad(v) >= 18 || 'Debes tener al menos 18 años']"
+                    required
+                  ></v-text-field>
+                </v-col>
                 <v-col cols="12" md="6">
                   <v-select
                     v-model="sexo"
                     :items="['Masculino', 'Femenino']"
                     label="Sexo"
                     :rules="[v => !!v || 'Sexo es requerido']"
+                    required
                   ></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -47,6 +51,7 @@
                     label="Correo"
                     type="email"
                     :rules="[v => !!v || 'Correo es requerido', v => /.+@.+/.test(v) || 'Correo debe ser válido']"
+                    required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -55,6 +60,7 @@
                     label="Teléfono"
                     type="tel"
                     :rules="[v => !!v || 'Teléfono es requerido', v => /^[0-9]{10}$/.test(v) || 'Teléfono debe ser válido']"
+                    required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" v-if="datosBasicosCompletos">
@@ -63,6 +69,7 @@
                     label="Contraseña"
                     type="password"
                     :rules="[v => !!v || 'Contraseña es requerida']"
+                    required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" v-if="datosBasicosCompletos">
@@ -71,21 +78,31 @@
                     label="Confirmar Contraseña"
                     type="password"
                     :rules="[v => !!v || 'Confirmar contraseña es requerida', v => v === contrasena || 'Las contraseñas deben coincidir']"
+                    required
                   ></v-text-field>
                 </v-col>
               </v-row>
             </v-form>
           </v-card-text>
           <v-card-actions>
+            <v-btn text @click="$router.go(-1)">
+              Volver
+            </v-btn>
             <v-spacer></v-spacer>
-            <router-link to="Login">
-              <v-btn color="blue" :disabled="!formCompleto" @click="registrar">
-                Registrarse
-               </v-btn>
-            </router-link>
+            <v-btn color="blue" :disabled="!formCompleto" @click="registrar">
+              Registrarse
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-main>
+     
+      <v-snackbar
+        v-model="snackbar"
+        :color="snackbarColor"
+        :timeout="4000"
+      >
+        {{ snackbarMessage }}
+      </v-snackbar>
     </v-layout>
   </v-app>
 </template>
@@ -104,10 +121,15 @@ const correo = ref('');
 const telefono = ref('');
 const contrasena = ref('');
 const confirmarContrasena = ref('');
+const valid = ref(false);
 const router = useRouter();
 
 const userStore = useUserStore();
 
+// Snackbar variables
+const snackbar = ref(false);
+const snackbarMessage = ref('');
+const snackbarColor = ref('success'); 
 
 const calcularEdad = (fechaNacimiento) => {
   const hoy = new Date();
@@ -130,7 +152,7 @@ const datosBasicosCompletos = computed(() => {
     /.+@.+/.test(correo.value) &&
     telefono.value &&
     /^[0-9]{10}$/.test(telefono.value) &&
-    calcularEdad(fechaNacimiento.value) >= 18 // Validación de edad
+    calcularEdad(fechaNacimiento.value) >= 18 
   );
 });
 
@@ -144,7 +166,7 @@ const formCompleto = computed(() => {
 });
 
 const registrar = async () => {
-  if (formCompleto.value) {
+  if (valid.value) {
     const requestData = {
       nombre: nombre.value,
       apellidos: apellidos.value,
@@ -154,8 +176,6 @@ const registrar = async () => {
       telefono: telefono.value,
       contrasena: contrasena.value
     };
-
-    console.log('Datos a enviar:', requestData);
 
     try {
       const response = await fetch('http://mipagina.com/registro', {
@@ -168,36 +188,53 @@ const registrar = async () => {
 
       const result = await response.json();
 
-      if (result.success) {
+      console.log('Resultado del servidor:', result); // Añade esta línea para depurar
+
+      if (response.ok && result.success) {
         userStore.setUsuario({
           nombre: result.data.nombre,
           correo: result.data.correo,
           fecha_registro: result.data.fecha_registro
         });
 
-        router.push({ name: 'perfilusuario' });
+        snackbarMessage.value = 'Registro exitoso';
+        snackbarColor.value = 'success';
+        snackbar.value = true;
+
+        setTimeout(() => {
+          router.push({ name: 'login' });
+        }, 4000);
       } else {
-        console.error('Error al registrar:', result.message);
+        snackbarMessage.value = `Error al registrar`;
+        snackbarColor.value = 'error';
+        snackbar.value = true;
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
+      snackbarMessage.value = `Error en la solicitud`;
+      snackbarColor.value = 'error';
+      snackbar.value = true;
     }
+  } else {
+    snackbarMessage.value = 'Por favor, complete todos los campos correctamente.';
+    snackbarColor.value = 'error';
+    snackbar.value = true;
   }
 };
 </script>
 
 <style scoped>
 .v-main {
-  background: linear-gradient(black,red); /* Color de fondo gris claro */
+  background: linear-gradient(black, red);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .v-card {
-  background-color: white; /* Fondo blanco para el formulario */
-  color: black; /* Color de texto oscuro para contraste */
-  border-radius: 50px; /* Bordes redondeados para el formulario */
+  background-color: white; 
+  color: black; 
+  border-radius: 50px;
   padding: 20px;
 }
 
@@ -212,9 +249,10 @@ const registrar = async () => {
   text-align: center;
   color: black; /* Color de título oscuro */
   font-size: 24px;
-  font-weight: bold;
   margin-bottom: 20px;
 }
 
-
+.card-form {
+  border-radius: 15px; /* Bordes redondeados para la tarjeta */
+}
 </style>
