@@ -126,10 +126,6 @@ const router = useRouter();
 
 const userStore = useUserStore();
 
-// Snackbar variables
-const snackbar = ref(false);
-const snackbarMessage = ref('');
-const snackbarColor = ref('success'); 
 
 const calcularEdad = (fechaNacimiento) => {
   const hoy = new Date();

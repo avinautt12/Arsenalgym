@@ -53,15 +53,7 @@ const contrasena = ref('');
 const router = useRouter();
 const userStore = useUserStore();
 
-const ingresarFormulario = async () => {
-  if (!identificador.value || !contrasena.value) {
-    alert('Por favor, llena todos los campos.');
-    return;
-  }
-  if (identificador.value === 'Peniche1234' && contrasena.value === '123456') {
-    router.push({ name: 'AdminInicio' });
-    return;
-  }
+const ingresarFormulario1 = async () => {
   try {
     const response = await fetch('http://mipagina.com/login', {
       method: 'POST',
