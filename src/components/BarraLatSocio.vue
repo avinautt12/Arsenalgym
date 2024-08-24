@@ -1,181 +1,174 @@
 <template>
   <div class="container">
-    <aside class="sidebar">
-      <v-btn router-link to="/miinfo"
-        class="botones"
-        @mouseover="activarColorGris"
-        @mouseleave="restaurarColorboton"
-        :color="coloresBotones1"
-      >Mi Perfil</v-btn>
+    <v-btn
+      class="hamburger-button"
+      @click="toggleSidebar"
+      v-show="isMobile"
+    >
+      <v-icon>mdi-dumbbell</v-icon>
+    </v-btn>
+
+    <aside :class="['sidebar', { 'sidebar-hidden': isMobile && !sidebarVisible }]">
       <v-btn
         class="botones"
-        @mouseover="activarColorGris"
-        @mouseleave="restaurarColorboton"
-        :color="coloresBotones1"
+        @mouseover="activarColorGris('perfil')"
+        @mouseleave="restaurarColorboton('perfil')"
+        :color="coloresBotones1.perfil"
+      >Mi Perfil</v-btn>
+      
+      <v-btn
+        class="botones"
+        @mouseover="activarColorGris('rutinas')"
+        @mouseleave="restaurarColorboton('rutinas')"
+        :color="coloresBotones1.rutinas"
         @click="toggleRutinas"
       >Rutinas</v-btn>
 
-      <!-- botones de rutina -->
       <div v-if="showRutinas" class="rutinas">
-        <v-btn router-link to="/bicep"
-          class="botonesR"
-          @mouseover="activarColorR"
-          @mouseleave="restaurarColorR"
-          @click="mostrarContenido('Bicep')"
-        >Bicep</v-btn>
-        <v-btn router-link to="/tricep"
-          class="botonesR"
-          @mouseover="activarColorR"
-          @mouseleave="restaurarColorR"
-          @click="mostrarContenido('Tricep')"
-          :color="coloresBotonesR"
-        >Tricep</v-btn>
-        <v-btn router-link to="/espalda"
-          class="botonesR"
-          @mouseover="activarColorR"
-          @mouseleave="restaurarColorR"
-          @click="mostrarContenido('Espalda')"
-          :color="coloresBotonesR"
-        >Espalda</v-btn>
-        <v-btn router-link to="/hombro"
-          class="botonesR"
-          @mouseover="activarColorR"
-          @mouseleave="restaurarColorR"
-          @click="mostrarContenido('Hombro')"
-          :color="coloresBotonesR"
-        >Hombro</v-btn>
-        <v-btn router-link to="/pecho"
-          class="botonesR"
-          @mouseover="activarColorR"
-          @mouseleave="restaurarColorR"
-          @click="mostrarContenido('Pecho')"
-          :color="coloresBotonesR"
-        >Pecho</v-btn>
-        <v-btn router-link to="/pierna"
-          class="botonesR"
-          @mouseover="activarColorR"
-          @mouseleave="restaurarColorR"
-          @click="mostrarContenido('Pierna')"
-          :color="coloresBotonesR"
-        >Pierna</v-btn>
+            <v-btn router-link to="/bicep"
+              class="botonesR"
+              @mouseover="activarColorR('bicep')"
+              @mouseleave="restaurarColorR('bicep')"
+              :color="coloresBotonesR.bicep"
+            >Bicep</v-btn>
+            <v-btn
+              router-link to="/tricep"
+              class="botonesR"
+              @mouseover="activarColorR('tricep')"
+              @mouseleave="restaurarColorR('tricep')"
+              :color="coloresBotonesR.tricep"
+            >Tricep</v-btn>
+            <v-btn
+              router-link to="/espalda"
+              class="botonesR"
+              @mouseover="activarColorR('espalda')"
+              @mouseleave="restaurarColorR('espalda')"
+              :color="coloresBotonesR.espalda"
+            >Espalda</v-btn>
+            <v-btn
+              router-link to="/hombro"
+              class="botonesR"
+              @mouseover="activarColorR('hombro')"
+              @mouseleave="restaurarColorR('hombro')"
+              :color="coloresBotonesR.hombro"
+            >Hombro</v-btn>
+            <v-btn
+              router-link to="/pecho"
+              class="botonesR"
+              @mouseover="activarColorR('pecho')"
+              @mouseleave="restaurarColorR('pecho')"
+              :color="coloresBotonesR.pecho"
+            >Pecho</v-btn>
+            <v-btn
+              router-link to="/pierna"
+              class="botonesR"
+              @mouseover="activarColorR('pierna')"
+              @mouseleave="restaurarColorR('pierna')"
+              :color="coloresBotonesR.pierna"
+            >Pierna</v-btn>
       </div>
-      <v-btn router-link to="/novedades"
-        class="botones"
-        @mouseover="activarColorGris"
-        @mouseleave="restaurarColorboton"
-        :color="coloresBotones1"
-        @click="mostrarContenido('Novedades')"
-      >Novedades</v-btn>
 
-      <v-btn router-link to="/membresia"
-      class="botones"
-      @mouseover="activarColorGris"
-      @mouseleave="restaurarColorboton"
-      :color="coloresBotones1"
-      @click="mostrarContenido('Membresia')"
-      >Membresia</v-btn>
-  
-      <v-btn router-link to="/clases"
-        class="botones"
-        @mouseover="activarColorGris"
-        @mouseleave="restaurarColorboton"
-        :color="coloresBotones1"
-      >Clases</v-btn>
       <v-btn
         class="botones"
-        @mouseover="activarColorGris"
-        @mouseleave="restaurarColorboton"
-        :color="coloresBotones1"
+        @mouseover="activarColorGris('novedades')"
+        @mouseleave="restaurarColorboton('novedades')"
+        :color="coloresBotones1.novedades"
+      >Novedades</v-btn>
+
+      <v-btn
+        class="botones"
+        @mouseover="activarColorGris('membresia')"
+        @mouseleave="restaurarColorboton('membresia')"
+        :color="coloresBotones1.membresia"
+      >Membresia</v-btn>
+
+      <v-btn
+        class="botones"
+        @mouseover="activarColorGris('clases')"
+        @mouseleave="restaurarColorboton('clases')"
+        :color="coloresBotones1.clases"
+      >Clases</v-btn>
+
+      <v-btn
+        class="botones"
+        @mouseover="activarColorGris('historial')"
+        @mouseleave="restaurarColorboton('historial')"
+        :color="coloresBotones1.historial"
       >Historial</v-btn>
-      <v-btn router-link to="/"
-      class="botonSalir"
-      @mouseover="activarRojo"
-      @mouseleave="restaurarRojo"
-      :color="colorSalir"
-      @click="cerrarSesion"
-    >Cerrar Sesión</v-btn>
+
+      <v-btn
+        class="botones"
+        @mouseover="activarRojo"
+        @mouseleave="restaurarRojo"
+        :color="colorSalir"
+        @click="cerrarSesion"
+      >Cerrar Sesión</v-btn>
     </aside>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import Bicep from '@/views/BicepsView.vue';
-import Tricep from '@/views/TricepView.vue';
-import Espalda from '@/views/EspaldaView.vue';
-import Hombro from '@/views/HombroView.vue';
-import Pecho from '@/views/PechoView.vue';
-import Pierna from '@/views/PiernaView.vue';
-import Novedades from '@/views/NovedadesView.vue';
+import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import router from '@/router';
 
-const userStore = useUserStore();
-
-function cerrarSesion() {
-  userStore.clearUsuario();
-  // Redirige al usuario a la página de inicio o login si es necesario
-  // Por ejemplo, usando el router:
-  // router.push('/login');
-  router.push('/login');
-}
-
-// Estados
+const sidebarVisible = ref(false);
 const showRutinas = ref(false);
-const currentComponent = ref(null);
 
-// Funciones
-function toggleRutinas() {
-  showRutinas.value = !showRutinas.value;
-}
-
-const coloresBotones1 = {
+const coloresBotones1 = ref({
   perfil: 'white',
   rutinas: 'white',
+  novedades: 'white',
   membresia: 'white',
   clases: 'white',
   historial: 'white'
-};
+});
 
-const coloresBotonesR = {
+const coloresBotonesR = ref({
   bicep: 'white',
   tricep: 'white',
   espalda: 'white',
   hombro: 'white',
   pecho: 'white',
   pierna: 'white'
-};
-
-function mostrarContenido(componente) {
-  const componentes = {
-    Bicep,
-    Tricep,
-    Espalda,
-    Hombro,
-    Pecho,
-    Pierna,
-    Novedades 
-  };
-  currentComponent.value = componentes[componente] || null;
-}
-
-function activarColorGris() {
-  coloresBotones1.value = 'grey';
-}
-
-function restaurarColorboton() {
-  coloresBotones1.value = 'white';
-}
-
-function activarColorR() {
-  coloresBotonesR.value = 'grey';
-}
-
-function restaurarColorR() {
-  coloresBotonesR.value = 'white';
-}
+});
 
 const colorSalir = ref('white');
+
+const isMobile = ref(true);
+
+function checkMobile() {
+  isMobile.value = window.innerWidth <= 900;
+}
+
+onMounted(() => {
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
+
+function toggleSidebar() {
+  sidebarVisible.value = !sidebarVisible.value;
+}
+
+function toggleRutinas() {
+  showRutinas.value = !showRutinas.value;
+}
+
+function activarColorGris(boton) {
+  coloresBotones1.value[boton] = 'grey';
+}
+
+function restaurarColorboton(boton) {
+  coloresBotones1.value[boton] = 'white';
+}
+
+function activarColorR(boton) {
+  coloresBotonesR.value[boton] = 'grey';
+}
+
+function restaurarColorR(boton) {
+  coloresBotonesR.value[boton] = 'white';
+}
 
 function activarRojo() {
   colorSalir.value = 'red';
@@ -184,12 +177,28 @@ function activarRojo() {
 function restaurarRojo() {
   colorSalir.value = 'white';
 }
+
+function cerrarSesion() {
+  const userStore = useUserStore();
+  userStore.clearUsuario();
+  router.push('/login');
+}
 </script>
+
 
 <style scoped>
 .container {
   display: flex;
   height: 100vh;
+}
+
+.hamburger-button {
+  position: fixed;
+  margin-top: 15px;
+  margin-left: 15px;
+  z-index: 1000;
+  background-color: white;
+  color: black;
 }
 
 .sidebar {
@@ -204,6 +213,12 @@ function restaurarRojo() {
   top: 0;
   left: 0;
   margin-top: 60px;
+  transition: transform 0.3s ease;
+  z-index: 2000; 
+}
+
+.sidebar-hidden {
+  transform: translateX(-220px);
 }
 
 .botones {
@@ -214,29 +229,11 @@ function restaurarRojo() {
   text-align: left;
   padding-left: 10px;
   text-transform: capitalize;
-  background-color: var(--color-boton, white);
-  border-color: var(--color-boton, white);
+  background-color: white;
+  border-color: white;
   letter-spacing: 1px;
   transition: background-color 0.3s, color 0.3s;
   margin-top: 3px;
-}
-
-.botonSalir {
-  height: 40px;
-  width: 180px;
-  font-size: 22px;
-  font-family: Arial, Helvetica, sans-serif;
-  text-align: left;
-  padding-left: 10px;
-  background-color: var(--color-salir, red);
-  border-color: var(--color-salir, red);
-  color: grey;
-  text-transform: capitalize;
-  letter-spacing: 1px;
-  font-weight: normal;
-  transition: background-color 0.3s, color 0.3s;
-  margin-top: 540px; /* Ajustar esta propiedad */
-  position: fixed;
 }
 
 .botones:hover {
@@ -259,8 +256,8 @@ function restaurarRojo() {
   text-align: left;
   padding-left: 10px;
   text-transform: capitalize;
-  background-color: var(--color-botonR, white);
-  border-color: var(--color-botonR, white);
+  background-color: white;
+  border-color: white;
   letter-spacing: 1px;
   margin-bottom: 6px;
 }
@@ -270,12 +267,12 @@ function restaurarRojo() {
   color: white;
 }
 
-main {
-  flex: 1;
-  margin-left: 200px;
-  padding: 20px;
-  height: 100vh;
-  margin-top: 40px;
-  overflow-y: auto;
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-220px);
+  }
+  .sidebar-hidden {
+    transform: translateX(0);
+  }
 }
 </style>

@@ -8,7 +8,7 @@
           <v-card class="pa-5 profile-card">
             <v-card-title class="titulo">
               Bienvenido, {{ userStore.usuario.nombre }} {{ userStore.usuario.apellido }}
-              <v-icon class="ml-2">mdi-dumbbell</v-icon>
+              <v-icon class="ml-2">mdi-account</v-icon>
             </v-card-title>
             <v-card-subtitle class="info">
               Correo: {{ userStore.usuario.correo }}
@@ -185,7 +185,8 @@ background: grey;
 transition: transform 0.3s ease-in;
 position: relative;
 top: -730px; /* Ajusta este valor para subir la tarjeta */
-margin-left: 5px;   
+margin-left: 5px; 
+margin-top: 50px;  
 }
 
 .titulo {
@@ -218,6 +219,7 @@ top: -610px; /* Ajusta este valor para subir la tarjeta */
 margin-left: 5px;
 white-space: pre-wrap; /* Permitir saltos de línea y manejar el contenido */
 word-wrap: break-word; /* Evitar desbordamientos de contenido */
+margin-top: 50px; 
 }
 
 .titulo-r {
@@ -252,6 +254,7 @@ transition: transform 0.3s ease-in;
 position: relative;
 top: -260px; /* Ajusta este valor para subir la tarjeta */
 margin-left: 5px;
+margin-top: 50px; 
 }  
 
 .titulo-p {

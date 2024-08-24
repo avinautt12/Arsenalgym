@@ -14,7 +14,7 @@
             </v-col>
           </v-row>
           <v-row v-else>
-            <v-col v-for="(producto, index) in carritoStore.productos" :key="producto.ID_PRODUCTO" cols="12" md="4">
+            <v-col v-for="(producto, index) in carritoStore.productos" :key="index" cols="12" md="4">
               <v-card class="mb-4 producto" outlined>
                 <v-img :src="producto.IMAGEN" class="producto-img" aspect-ratio="16/9" contain @error="handleImageError"></v-img>
                 <v-card-title>{{ producto.NOMBRE }}</v-card-title>
@@ -28,7 +28,7 @@
                         <v-icon small>mdi-minus-circle-outline</v-icon>
                       </v-btn>
                       <p class="mx-2">{{ producto.cantidad }}</p>
-                      <v-btn icon small @click="increaseQuantity(producto.ID_PRODUCTO)">
+                      <v-btn icon small @click="carritoStore.aumentar(producto.ID)">
                         <v-icon small>mdi-plus-circle-outline</v-icon>
                       </v-btn>
                     </v-col>
@@ -38,7 +38,7 @@
                   </v-chip>
                 </v-card-text>
                 <v-card-actions class="justify-end">
-                  <v-btn text color="red darken-2" @click="removeFromCart(producto.ID_PRODUCTO)">Eliminar</v-btn>
+                  <v-btn text color="red darken-2" @click="carritoStore.removeFromCart(producto.ID)">Eliminar</v-btn>
                 </v-card-actions>
               </v-card>
             </v-col>
@@ -53,7 +53,6 @@
           </v-row>
           <v-row>
             <v-col cols="12" class="d-flex justify-end">
-              <v-btn router-link to="/pagomembresia" class="membresia" color="primary" @click="proceedToPayment">Pagar membresía</v-btn>
               <v-btn router-link to="/pago" color="primary" @click="proceedToPayment">Proceder al pago</v-btn>
               <v-btn router-link to="/Producto" class="regresar" color="red">Regresar</v-btn>
             </v-col>
@@ -88,34 +87,28 @@ import { computed } from 'vue';
 import { useCarritoStore } from '@/stores/carrito';
 import { useProductosStore } from '@/stores/productos';
 import barraNav from '@/components/barraNav.vue';
-
+import router from '@/router';
 const carritoStore = useCarritoStore();
 const productosStore = useProductosStore();
 
-const removeFromCart = (ID_PRODUCTO) => {
-  carritoStore.removeProducto(ID_PRODUCTO);
+const removeFromCart = (ID) => {
+  carritoStore.removeProducto(ID);
 };
 
+// Función para añadir producto al carrito
 const addToCart = (producto) => {
   carritoStore.addProducto(producto);
 };
 
-// Increment the quantity of a product in the cart
-const increaseQuantity = (ID_PRODUCTO) => {
-  carritoStore.addCantidad(ID_PRODUCTO);
+const decrementar = (producto) => {
+  carritoStore.removeCantidad(producto);
 };
 
-// Decrement the quantity of a product in the cart
-const decreaseQuantity = (ID_PRODUCTO) => {
-  const producto = carritoStore.productos.find(p => p.ID_PRODUCTO === ID_PRODUCTO);
-  if (producto && producto.cantidad > 1) {
-    producto.cantidad -= 1;
-  } else {
-    carritoStore.removeProducto(ID_PRODUCTO);
-  }
+const aumentar = (producto) => {
+  carritoStore. updateCantidad(producto);
 };
 
-// Computed property to get recommended products
+// Computed property para obtener productos recomendados
 const recommendedProductos = computed(() => {
   const allProductos = productosStore.productos;
   const carritoIDs = carritoStore.productos.map(p => p.ID_PRODUCTO);
@@ -129,13 +122,24 @@ const recommendedProductos = computed(() => {
 
 // Computed property to calculate the total amount of the cart
 const totalCarrito = computed(() => {
-  return carritoStore.productos.reduce((total, producto) => total + (producto.PRECIO * producto.cantidad), 0).toFixed(2);
+  return carritoStore.totalCarrito;
 });
 
-// Function to handle the payment process
+// Función para proceder al pago
 const proceedToPayment = () => {
-  // Implement your payment process here
-  alert('Procediendo al pago');
+if(carritoStore.productos.length<=0){
+  alert('el carrito esta vacio, no puedes proceder');
+    router.push({name: 'Producto'});
+}
+else {
+  router.push({name: 'pago'});
+}
+
+};
+
+// Handle image loading errors
+const handleImageError = (event) => {
+  event.target.src = 'path/to/default-image.jpg'; // Cambia a la imagen predeterminada
 };
 </script>
 
@@ -143,7 +147,6 @@ const proceedToPayment = () => {
 .membresia{
   margin-right: 5px;
 }
-
 .regresar{
   margin-left: 5px;
 }
