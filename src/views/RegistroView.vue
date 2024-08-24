@@ -28,13 +28,13 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="fechaNacimiento"
-                    label="Fecha de Nacimiento"
-                    type="date"
-                    :rules="[v => !!v || 'Fecha de nacimiento es requerida']"
-                  ></v-text-field>
-                </v-col>
+                <v-text-field
+                 v-model="fechaNacimiento"
+                 label="Fecha de Nacimiento"
+                 type="date"
+                 :rules="[v => !!v || 'Fecha de nacimiento es requerida', v => calcularEdad(v) >= 18 || 'Debes tener al menos 18 años']"
+                 ></v-text-field>
+                </v-col> 
                 <v-col cols="12" md="6">
                   <v-select
                     v-model="sexo"
@@ -88,20 +88,14 @@
               Volver
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="blue" :disabled="!formCompleto" @click="registrar">
-              Registrarse
-            </v-btn>
+            <router-link to="Login">
+              <v-btn color="blue" :disabled="!formCompleto" @click="registrar">
+                Registrarse
+               </v-btn>
+            </router-link>
           </v-card-actions>
         </v-card>
       </v-main>
-     
-      <v-snackbar
-        v-model="snackbar"
-        :color="snackbarColor"
-        :timeout="4000"
-      >
-        {{ snackbarMessage }}
-      </v-snackbar>
     </v-layout>
   </v-app>
 </template>
@@ -125,6 +119,22 @@ const router = useRouter();
 
 const userStore = useUserStore();
 
+// Snackbar variables
+const snackbar = ref(false);
+const snackbarMessage = ref('');
+const snackbarColor = ref('success'); 
+
+const calcularEdad = (fechaNacimiento) => {
+  const hoy = new Date();
+  const fechaNac = new Date(fechaNacimiento);
+  let edad = hoy.getFullYear() - fechaNac.getFullYear();
+  const mes = hoy.getMonth() - fechaNac.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+    edad--;
+  }
+  return edad;
+};
+
 const datosBasicosCompletos = computed(() => {
   return (
     nombre.value &&
@@ -134,7 +144,8 @@ const datosBasicosCompletos = computed(() => {
     correo.value &&
     /.+@.+/.test(correo.value) &&
     telefono.value &&
-    /^[0-9]{10}$/.test(telefono.value)
+    /^[0-9]{10}$/.test(telefono.value) &&
+    calcularEdad(fechaNacimiento.value) >= 18 // Validación de edad
   );
 });
 
@@ -179,6 +190,11 @@ const registrar = async () => {
           fecha_registro: result.data.fecha_registro
         });
 
+        // Show success message
+        snackbarMessage.value = 'Registro exitoso';
+        snackbarColor.value = 'success'; // or any other color
+        snackbar.value = true;
+
         snackbarMessage.value = 'Registro exitoso';
         snackbarColor.value = 'success';
         snackbar.value = true;
@@ -187,15 +203,10 @@ const registrar = async () => {
           router.push({ name: 'login' });
         }, 4000);
       } else {
-        snackbarMessage.value = `Error al registrar`;
-        snackbarColor.value = 'error';
-        snackbar.value = true;
+        console.error('Error al registrar:', result.message);
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
-      snackbarMessage.value = `Error en la solicitud`;
-      snackbarColor.value = 'error';
-      snackbar.value = true;
     }
   } else {
     snackbarMessage.value = 'Por favor, complete todos los campos correctamente.';
@@ -238,7 +249,3 @@ const registrar = async () => {
   border-radius: 15px; /* Bordes redondeados para la tarjeta */
 }
 </style>
-
-
-
-

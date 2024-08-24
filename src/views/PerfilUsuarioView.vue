@@ -43,7 +43,7 @@ const usuario = computed(() => userStore.usuario);
 }
 
 .profile-card {
-  width: 450px;
+  width: 350px;
   padding: 20px;
   border-radius: 15px;
   background: linear-gradient(to bottom, black, red);;
@@ -51,12 +51,8 @@ const usuario = computed(() => userStore.usuario);
   transition: transform 0.3s ease-in; /* Animación al pasar el mouse */
 }
 
-.profile-card:hover {
-  transform: scale(1.15); /* Efecto de zoom al pasar el mouse */
-}
-
 .title {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: bold;
   margin: 20px 0;
   color: white;
@@ -65,7 +61,7 @@ const usuario = computed(() => userStore.usuario);
 }
 
 .info {
-  font-size: 18px;
+  font-size: 15px;
   color: white;
 }
 
