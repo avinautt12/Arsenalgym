@@ -122,14 +122,18 @@ const totalCarrito = computed(() => carritoStore.totalCarrito);
 
 // Función para proceder al pago
 const proceedToPayment = () => {
-if(carritoStore.productos.length<=0){
-  alert('el carrito esta vacio, no puedes proceder');
-    router.push({name: 'Producto'});
-}
-else {
-  router.push({name: 'pago'});
-}
+  if (!userStore.isAuthenticated()) { 
+    alert('Debes estar logueado para proceder al pago. Redirigiendo al login...');
+    router.push({ name: 'Login' }); 
+    return;
+  }
 
+  if (carritoStore.productos.length <= 0) {
+    alert('El carrito está vacío, no puedes proceder');
+    router.push({ name: 'Producto' });
+  } else {
+    router.push({ name: 'pago' });
+  }
 };
 
 

@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', {
     setUsuario(usuario) {
       this.usuario = usuario;
       localStorage.setItem('usuario', JSON.stringify(usuario));
+
     },
     clearUsuario() {
       this.usuario = null;

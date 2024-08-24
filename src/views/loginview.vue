@@ -53,7 +53,7 @@ const contrasena = ref('');
 const router = useRouter();
 const userStore = useUserStore();
 
-const ingresarFormulario1 = async () => {
+const ingresarFormulario = async () => {
   try {
     const response = await fetch('http://mipagina.com/login', {
       method: 'POST',

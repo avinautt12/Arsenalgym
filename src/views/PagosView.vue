@@ -8,33 +8,6 @@
 
           <!-- Contact Information -->
           <v-card-text>
-            <v-row>
-              <v-col cols="12" class="mb-1">
-                <v-title>Información de Contacto</v-title>
-                <v-text-field
-                  v-model="email"
-                  label="Correo Electrónico"
-                  placeholder="correoelectrónico@ejemplo.com"
-                  outlined
-                  dense
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" class="mt-n5 mb-0">
-                <v-text-field
-                  v-model="phone"
-                  label="Teléfono"
-                  placeholder="55 2112 1789"
-                  outlined
-                  dense
-                  required
-                  :rules="[
-                    v => v.length === 10 || 'El número de teléfono debe tener 10 dígitos'
-                  ]"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-
             <!-- Card Information -->
             <v-row>
               <v-col cols="12">
@@ -152,8 +125,8 @@ import { ref, computed } from 'vue';
 const carritoStore = useCarritoStore();
 const totalCarrito = computed(() => carritoStore.totalCarrito);
 
-const email = ref('');
-const phone = ref('');
+const email = ref(''); // Si tienes un campo para el email, por ejemplo
+const phone = ref(''); // Si tienes un campo para el teléfono, por ejemplo
 const cardNumber = ref('');
 const expiry = ref('');
 const cvc = ref('');
@@ -162,21 +135,21 @@ const postalCode = ref('');
 
 const procesarPago = async () => {
   try {
-    const response = await fetch('/pago', {
+    // Obtenemos el idCliente de la tienda del carrito si está disponible
+    const idCliente = 'C0001'; // Cambia esto por la forma en la que obtienes el idCliente
+
+    const response = await fetch('http://mipagina.com/carrito', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: email.value,
-        phone: phone.value,
-        cardNumber: cardNumber.value,
-        expiry: expiry.value,
-        cvc: cvc.value,
-        cardHolder: cardHolder.value,
-        postalCode: postalCode.value,
-        productos: carritoStore.productos,
-        totalCarrito: totalCarrito.value
+        idCliente: idCliente,
+        carrito: carritoStore.productos.map(producto => ({
+          idProducto: producto.ID,
+          Cantidad: producto.cantidad,
+          Precio: producto.PRECIO
+        }))
       })
     });
 
