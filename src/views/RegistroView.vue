@@ -26,13 +26,13 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                <v-text-field
-                 v-model="fechaNacimiento"
-                 label="Fecha de Nacimiento"
-                 type="date"
-                 :rules="[v => !!v || 'Fecha de nacimiento es requerida', v => calcularEdad(v) >= 18 || 'Debes tener al menos 18 años']"
-                 ></v-text-field>
-                </v-col> 
+                  <v-text-field
+                    v-model="fechaNacimiento"
+                    label="Fecha de Nacimiento"
+                    type="date"
+                    :rules="[v => !!v || 'Fecha de nacimiento es requerida', v => calcularEdad(v) >= 18 || 'Debes tener al menos 18 años']"
+                  ></v-text-field>
+                </v-col>
                 <v-col cols="12" md="6">
                   <v-select
                     v-model="sexo"
@@ -81,11 +81,19 @@
             <router-link to="Login">
               <v-btn color="blue" :disabled="!formCompleto" @click="registrar">
                 Registrarse
-               </v-btn>
+              </v-btn>
             </router-link>
           </v-card-actions>
         </v-card>
       </v-main>
+      <!-- Snackbar for messages -->
+      <v-snackbar
+        v-model="snackbar"
+        :color="snackbarColor"
+        :timeout="4000"
+      >
+        {{ snackbarMessage }}
+      </v-snackbar>
     </v-layout>
   </v-app>
 </template>
@@ -108,6 +116,22 @@ const router = useRouter();
 
 const userStore = useUserStore();
 
+// Snackbar variables
+const snackbar = ref(false);
+const snackbarMessage = ref('');
+const snackbarColor = ref('success'); 
+
+const calcularEdad = (fechaNacimiento) => {
+  const hoy = new Date();
+  const fechaNac = new Date(fechaNacimiento);
+  let edad = hoy.getFullYear() - fechaNac.getFullYear();
+  const mes = hoy.getMonth() - fechaNac.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+    edad--;
+  }
+  return edad;
+};
+
 const datosBasicosCompletos = computed(() => {
   return (
     nombre.value &&
@@ -118,7 +142,7 @@ const datosBasicosCompletos = computed(() => {
     /.+@.+/.test(correo.value) &&
     telefono.value &&
     /^[0-9]{10}$/.test(telefono.value) &&
-    calcularEdad(fechaNacimiento.value) >= 18 // Validación de edad
+    calcularEdad(fechaNacimiento.value) >= 18 
   );
 });
 
@@ -163,12 +187,23 @@ const registrar = async () => {
           fecha_registro: result.data.fecha_registro
         });
 
+        // Show success message
+        snackbarMessage.value = 'Registro exitoso';
+        snackbarColor.value = 'success'; // or any other color
+        snackbar.value = true;
+
         router.push({ name: 'perfilusuario' });
       } else {
-        console.error('Error al registrar:', result.message);
+        // Show error message
+        snackbarMessage.value = `Error al registrar : ${result.message}`;
+        snackbarColor.value = 'error'; // or any other color
+        snackbar.value = true;
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
+      snackbarMessage.value = 'Error en la solicitud';
+      snackbarColor.value = 'error';
+      snackbar.value = true;
     }
   }
 };

@@ -1,51 +1,56 @@
 <template>
-  <div>
-    <div class="container">
-      <aside class="sidebar">
-        <v-btn
-          class="botones"
-          @mouseover="activarColorGris('info')"
-          @mouseleave="restaurarColorboton('info')"
-          :color="coloresBotones.info"
-        >Mi información</v-btn>
-        <v-btn
-          class="botones"
-          @mouseover="activarColorGris('compras')"
-          @mouseleave="restaurarColorboton('compras')"
-          :color="coloresBotones.compras"
-          @click="compras"
-        >Mis Compras</v-btn>
-       
-        <v-btn
-          class="botones"
-          @mouseover="activarColorGris('historial')"
-          @mouseleave="restaurarColorboton('historial')"
-          :color="coloresBotones.historial"
-        >Historial</v-btn>
-        <v-btn
-          class="botonSalir"
-          @mouseover="activarRojo"
-          @mouseleave="restaurarRojo"
-          :color="colorSalir"
-          @click="cerrarSesion"
-        >Cerrar Sesión</v-btn>
-      </aside>     
-    </div>
+  <div class="container">
+    <!-- Botón de hamburguesa -->
+    <v-btn
+      class="hamburger-button"
+      @click="toggleSidebar"
+      v-show="isMobile"
+    >
+      <v-icon>mdi-dumbbell</v-icon>
+    </v-btn>
+
+    <!-- Barra lateral -->
+    <aside :class="['sidebar', { 'sidebar-hidden': isMobile && !sidebarVisible }]">
+      <v-btn
+        class="botones"
+        @mouseover="activarColorGris('info')"
+        @mouseleave="restaurarColorboton('info')"
+        :color="coloresBotones.info"
+      >Mi Perfil</v-btn>
+      <v-btn
+        class="botones"
+        @mouseover="activarColorGris('compras')"
+        @mouseleave="restaurarColorboton('compras')"
+        :color="coloresBotones.compras"
+        @click="compras"
+      >Mis Compras</v-btn>
+      <v-btn
+        class="botones"
+        @mouseover="activarColorGris('historial')"
+        @mouseleave="restaurarColorboton('historial')"
+        :color="coloresBotones.historial"
+      >Historial</v-btn>
+      <v-btn
+        class="botones"
+        @mouseover="activarRojo"
+        @mouseleave="restaurarRojo"
+        :color="colorSalir"
+        @click="cerrarSesion"
+      >Cerrar Sesión</v-btn>
+    </aside>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import router from '@/router';
 
 const userStore = useUserStore();
+const sidebarVisible = ref(false);
 
 function cerrarSesion() {
   userStore.clearUsuario();
-  // Redirige al usuario a la página de inicio o login si es necesario
-  // Por ejemplo, usando el router:
-  // router.push('/login');
   router.push('/login');
 }
 
@@ -54,6 +59,21 @@ const coloresBotones = ref({
   compras: 'white',
   historial: 'white'
 });
+
+const isMobile = ref(false);
+
+function checkMobile() {
+  isMobile.value = window.innerWidth <= 900;
+}
+
+onMounted(() => {
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
+
+function toggleSidebar() {
+  sidebarVisible.value = !sidebarVisible.value;
+}
 
 function activarColorGris(boton) {
   coloresBotones.value[boton] = 'grey';
@@ -77,8 +97,16 @@ function restaurarRojo() {
 <style scoped>
 .container {
   display: flex;
-  flex-direction: row;
-  height: calc(100vh - 64px); 
+  height: 100vh;
+}
+
+.hamburger-button {
+  position: fixed;
+  margin-top: 10px;
+  margin-right: 95px;
+  z-index: 3000;
+  background-color: white;
+  color: black;
 }
 
 .sidebar {
@@ -90,20 +118,29 @@ function restaurarRojo() {
   flex-direction: column;
   align-items: center;
   position: fixed;
-  top: 64px;
+  top: 0;
   left: 0;
+  margin-top: 60px;
+  transition: transform 0.3s ease, visibility 0.3s ease;
+  z-index: 2000;
+  transform: translateX(0);
+}
+
+.sidebar-hidden {
+  transform: translateX(-220px);
+  visibility: hidden;
 }
 
 .botones {
   height: 40px;
-  width: 200%;
-  font-size: 22px;
+  width: 100%;
+  font-size: 20px;
   font-family: Arial, Helvetica, sans-serif;
   text-align: left;
   padding-left: 10px;
   text-transform: capitalize;
-  background-color: var(--color-boton, white);
-  border-color: var(--color-boton, white);
+  background-color: white;
+  border-color: white;
   letter-spacing: 1px;
   transition: background-color 0.3s, color 0.3s;
   margin-top: 3px;
@@ -114,10 +151,10 @@ function restaurarRojo() {
   font-family: Arial, Helvetica, sans-serif;
   position: absolute;
   letter-spacing: 1px;
-  bottom: 80px; 
-  left: 10px;   
-  background-color: var(--color-boton, white); 
-  border-color: var(--color-boton, white); 
+  bottom: 80px;
+  left: 10px;
+  background-color: white;
+  border-color: white;
   color: grey;
 }
 
@@ -126,16 +163,14 @@ function restaurarRojo() {
   color: white;
 }
 
-.botonSalir:hover {
-  --color-boton: grey;
-  color: white;
-}
+@media (max-width: 900px) {
+  .sidebar-hidden {
+    transform: translateX(-220px);
+    visibility: hidden;
+  }
 
-main {
-  flex: 1;
-  margin-left: 200px;
-  padding: 20px;
-  height: calc(100vh - 64px); 
-  overflow-y: auto;
+  .sidebar {
+  background: transparent;
+  }
 }
 </style>
