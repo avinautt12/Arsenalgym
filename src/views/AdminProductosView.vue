@@ -27,6 +27,7 @@
             </router-link>
           </v-btn>
           <v-btn color="red" @click="openDeleteModal">Eliminar Producto</v-btn>
+          <v-btn color="primary" class="editar" @click="openDeleteModal">Editar Producto</v-btn>
         </div>
       </div>
     </div>
@@ -69,6 +70,8 @@
   {{ snackbar.message }}
 </v-snackbar>
 
+    
+
 </template>
 
 <script setup>
@@ -104,6 +107,20 @@ const mostrarproductos = () => {
       }
     });
 };
+
+
+//const productoseditar = ref();
+
+// const mostrarproductoseditar = () => {
+//   fetch(`http://mipagina.com/productos`)
+//     .then(response => response.json())
+//     .then(json => {
+//       if (json.status === 200){
+//         productoseditar.value = json.data;
+//       }
+//     }
+//   );
+// };
 
 const openDeleteModal = () => {
   deleteDialog.value = true;
@@ -159,6 +176,10 @@ onMounted(() => {
 </script>
 
 <style>
+.editar{
+  margin-left: 15px;
+}
+
 #admin-inicio {
   display: flex;
   flex-direction: column;

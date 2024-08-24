@@ -9,13 +9,12 @@
     </v-btn>
 
     <aside :class="['sidebar', { 'sidebar-hidden': isMobile && !sidebarVisible }]">
-      <v-btn
+      <v-btn router-link to="/miinfo"
         class="botones"
         @mouseover="activarColorGris('perfil')"
         @mouseleave="restaurarColorboton('perfil')"
         :color="coloresBotones1.perfil"
       >Mi Perfil</v-btn>
-      
       <v-btn
         class="botones"
         @mouseover="activarColorGris('rutinas')"
@@ -68,7 +67,7 @@
             >Pierna</v-btn>
       </div>
 
-      <v-btn
+      <v-btn router-link to="/novedades"
         class="botones"
         @mouseover="activarColorGris('novedades')"
         @mouseleave="restaurarColorboton('novedades')"
@@ -82,7 +81,7 @@
         :color="coloresBotones1.membresia"
       >Membresia</v-btn>
 
-      <v-btn
+      <v-btn router-link to="/clases"
         class="botones"
         @mouseover="activarColorGris('clases')"
         @mouseleave="restaurarColorboton('clases')"

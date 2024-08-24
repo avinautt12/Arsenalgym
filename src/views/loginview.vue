@@ -53,7 +53,7 @@ const contrasena = ref('');
 const router = useRouter();
 const userStore = useUserStore();
 
-const ingresarFormulario1 = async () => {
+const ingresarFormulario = async () => {
   try {
     const response = await fetch('http://mipagina.com/login', {
       method: 'POST',
@@ -68,7 +68,7 @@ const ingresarFormulario1 = async () => {
     
     const result = await response.json();
     if (identificador.value === 'Peniche1234' && contrasena.value === '123456') {
-    router.push({ name: 'admininicio' });
+    router.push({ name: 'AdminInicio' });
     return;
   }
 
