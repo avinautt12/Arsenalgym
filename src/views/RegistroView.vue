@@ -32,8 +32,7 @@
                     v-model="fechaNacimiento"
                     label="Fecha de Nacimiento"
                     type="date"
-                    :rules="[v => !!v || 'Fecha de nacimiento es requerida', v => calcularEdad(v) >= 18 || 'Debes tener al menos 18 años']"
-                    required
+                    :rules="[v => !!v || 'Fecha de nacimiento es requerida']"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -127,7 +126,7 @@ const router = useRouter();
 const userStore = useUserStore();
 
 
-
+// Snackbar variables
 const snackbar = ref(false);
 const snackbarMessage = ref('');
 const snackbarColor = ref('success'); 
@@ -153,8 +152,7 @@ const datosBasicosCompletos = computed(() => {
     correo.value &&
     /.+@.+/.test(correo.value) &&
     telefono.value &&
-    /^[0-9]{10}$/.test(telefono.value) &&
-    calcularEdad(fechaNacimiento.value) >= 18 
+    /^[0-9]{10}$/.test(telefono.value)
   );
 });
 
