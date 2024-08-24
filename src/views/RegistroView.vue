@@ -26,13 +26,13 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="fechaNacimiento"
-                    label="Fecha de Nacimiento"
-                    type="date"
-                    :rules="[v => !!v || 'Fecha de nacimiento es requerida']"
-                  ></v-text-field>
-                </v-col>
+                <v-text-field
+                 v-model="fechaNacimiento"
+                 label="Fecha de Nacimiento"
+                 type="date"
+                 :rules="[v => !!v || 'Fecha de nacimiento es requerida', v => calcularEdad(v) >= 18 || 'Debes tener al menos 18 años']"
+                 ></v-text-field>
+                </v-col> 
                 <v-col cols="12" md="6">
                   <v-select
                     v-model="sexo"
@@ -96,7 +96,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 import barraNav from '@/components/barraNav.vue';
 
-const nombre = ref( '');
+const nombre = ref('');
 const apellidos = ref('');
 const fechaNacimiento = ref('');
 const sexo = ref('');
@@ -108,6 +108,18 @@ const router = useRouter();
 
 const userStore = useUserStore();
 
+// Función para calcular la edad a partir de la fecha de nacimiento
+const calcularEdad = (fechaNacimiento) => {
+  const hoy = new Date();
+  const fechaNac = new Date(fechaNacimiento);
+  let edad = hoy.getFullYear() - fechaNac.getFullYear();
+  const mes = hoy.getMonth() - fechaNac.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+    edad--;
+  }
+  return edad;
+};
+
 const datosBasicosCompletos = computed(() => {
   return (
     nombre.value &&
@@ -117,7 +129,8 @@ const datosBasicosCompletos = computed(() => {
     correo.value &&
     /.+@.+/.test(correo.value) &&
     telefono.value &&
-    /^[0-9]{10}$/.test(telefono.value)
+    /^[0-9]{10}$/.test(telefono.value) &&
+    calcularEdad(fechaNacimiento.value) >= 18 // Validación de edad
   );
 });
 
