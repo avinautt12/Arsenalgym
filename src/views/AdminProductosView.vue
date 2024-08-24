@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <!-- Modal para eliminar producto -->
+
     <v-dialog v-model="deleteDialog" max-width="500px">
       <v-card>
         <v-card-title class="headline">Eliminar Producto</v-card-title>
@@ -47,7 +47,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- Snackbar para mensajes de éxito -->
+
     <v-snackbar
       v-model="snackbar.show"
       :timeout="3000"
@@ -135,8 +135,8 @@ const deleteProducto = () => {
           color: 'success'
         };
         deleteDialog.value = false;
-        deleteId.value = ''; // Limpiar el ID después de eliminar
-        mostrarproductos(); // Refrescar la lista de productos
+        deleteId.value = ''; 
+        mostrarproductos();                                                                                                                                           
       } else {
         snackbar.value = {
           show: true,

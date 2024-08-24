@@ -127,7 +127,7 @@ const router = useRouter();
 const userStore = useUserStore();
 
 
-// Snackbar variables
+
 const snackbar = ref(false);
 const snackbarMessage = ref('');
 const snackbarColor = ref('success'); 
@@ -190,7 +190,7 @@ const registrar = async () => {
 
       const result = await response.json();
 
-      console.log('Resultado del servidor:', result); // Añade esta línea para depurar
+      console.log('Resultado del servidor:', result);
 
       if (response.ok && result.success) {
         userStore.setUsuario({
@@ -249,13 +249,13 @@ const registrar = async () => {
 
 .titulo-formulario {
   text-align: center;
-  color: black; /* Color de título oscuro */
+  color: black; 
   font-size: 24px;
   margin-bottom: 20px;
 }
 
 .card-form {
-  border-radius: 15px; /* Bordes redondeados para la tarjeta */
+  border-radius: 15px; 
 }
 </style>
 

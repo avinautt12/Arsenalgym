@@ -1,154 +1,62 @@
+<!-- eslint-disable no-unused-vars -->
 <template>
-  <div id="admin-inicio">
-    <nav class="navbar">
-      <img src="/public/arsenal.png" class="logo" />
-    </nav>
-    <div class="contenedor">
-      <BarralateralAdmin></BarralateralAdmin>
-      <div class="main-content">
-        <!-- Botón para regresar -->
-        <v-btn icon @click="regresar" class="mb-4">
-          <v-icon>mdi-arrow-left</v-icon>
-        </v-btn>
-        <h2 class="mb-4">Buscar Producto</h2>
-        <v-form @submit.prevent="buscarProducto" class="mb-4">
-          <v-text-field v-model="form.id_producto" label="ID Producto" required></v-text-field>
-          <v-btn class="search-button" ype="submit" color="primary">Buscar Producto</v-btn>
-        </v-form>
-        <div v-if="producto">
-          <h2 class="mb-4">Editar Producto</h2>
-          <v-form @submit.prevent="actualizarProducto">
-            <v-text-field v-model="form.nombre" label="Nombre" required></v-text-field>
-            <v-text-field v-model="form.descripcion" label="Descripción" required></v-text-field>
-            <v-text-field v-model="form.precio" label="Precio" required></v-text-field>
-            <v-text-field v-model="form.stock" label="Stock"></v-text-field>
-            <div class="button-group mb-4">
-              <span>Seleccione la categoría:</span>
-              <v-btn
-                v-for="categoria in categorias"
-                :key="categoria.ID_CATEGORIA"
-                :color="form.id_categoria === categoria.ID_CATEGORIA ? 'primary' : ''"
-                @click="form.id_categoria = categoria.ID_CATEGORIA"
-                outlined
-              >
-                {{ categoria.NOMBRE }}
-              </v-btn>
-            </div>
-            <div class="action-buttons">
-              <v-btn type="submit" color="secondary" class="mt-4">Actualizar Producto</v-btn>
-              <v-btn @click="eliminarProducto" color="red" class="mt-4">Eliminar Producto</v-btn>
-            </div>
-          </v-form>
-        </div>
-      </div>
-    </div>
+  <div id="editar-producto">
+    <h2>Editar Producto</h2>
+    <v-form @submit.prevent="actualizarProducto">
+      <v-text-field
+        v-model="producto.nombre"
+        label="Nombre del Producto"
+        required
+      ></v-text-field>
+      <v-text-field
+        v-model="producto.precio"
+        label="Precio"
+        required
+      ></v-text-field>
+      <v-btn type="submit" color="primary">Guardar Cambios</v-btn>
+    </v-form>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import BarralateralAdmin from '@/components/BarralateralAdmin.vue';
+import { useRoute } from 'vue-router';
 
-const form = ref({
+const route = useRoute();
+const producto = ref({
   id_producto: '',
   nombre: '',
-  descripcion: '',
-  precio: '',
-  stock: '',
-  id_categoria: ''
+  precio: ''
 });
 
-const producto = ref(null);
-const categorias = ref([]);
-
-// Fetch categories
-const fetchCategorias = () => {
-  fetch('http://mipagina.com/categorias')
+const cargarProducto = () => {
+  const id = route.params.id;
+  fetch(`http://mipagina.com/api/productos/${id}`)
     .then(response => response.json())
-    .then(json => {
-      if (json.status === 200) {
-        categorias.value = json.data;
-      } else {
-        alert(json.message);
-      }
+    .then(data => {
+      producto.value = data.producto;
     });
 };
 
-// Search for product
-const buscarProducto = () => {
-  fetch(`http://mipagina.com/producto/buscar?id_producto=${form.value.id_producto}`)
-    .then(response => response.json())
-    .then(json => {
-      if (json.status === 200) {
-        producto.value = json.data;
-        Object.assign(form.value, {
-          id_producto: json.data.ID_PRODUCTO,
-          nombre: json.data.NOMBRE,
-          descripcion: json.data.DESCRIPCION,
-          precio: json.data.PRECIO,
-          stock: json.data.STOCK,
-          id_categoria: json.data.ID_CATEGORIA
-        });
-      } else {
-        alert(json.message);
-        producto.value = null;
-      }
-    });
-};
-
-// Update product
 const actualizarProducto = () => {
-  fetch('http://mipagina.com/producto/actualizar', {
-    method: 'POST',
+  fetch(`http://mipagina.com/api/productos/${producto.value.id_producto}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      id_producto: form.value.id_producto,
-      nombre: form.value.nombre,
-      descripcion: form.value.descripcion,
-      precio: form.value.precio,
-      stock: form.value.stock,
-      id_categoria: form.value.id_categoria
-    })
+    body: JSON.stringify(producto.value)
   })
     .then(response => response.json())
-    .then(json => {
-      alert(json.message);
-      if (json.status === 200) {
-        producto.value = null;
-      }
+    .then(() => {
+      alert('Producto actualizado con éxito');
     });
 };
 
-// Delete product
-const eliminarProducto = () => {
-  fetch('http://mipagina.com/producto/eliminar', {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ id_producto: form.value.id_producto })
-  })
-    .then(response => response.json())
-    .then(json => {
-      alert(json.message);
-      if (json.status === 200) {
-        producto.value = null;
-      }
-    });
-};
-
-// Go back
-const regresar = () => {
-  window.history.back();
-};
-
-// Fetch categories on mount
 onMounted(() => {
-  fetchCategorias();
+  cargarProducto();
 });
 </script>
+
 
 <style>
 #admin-inicio {
