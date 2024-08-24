@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useCarritoStore } from './carrito';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -8,6 +9,7 @@ export const useUserStore = defineStore('user', {
     setUsuario(usuario) {
       this.usuario = usuario;
       localStorage.setItem('usuario', JSON.stringify(usuario));
+
     },
     clearUsuario() {
       this.usuario = null;
@@ -18,6 +20,8 @@ export const useUserStore = defineStore('user', {
       const usuario = JSON.parse(localStorage.getItem('usuario'));
       if (usuario) {
         this.setUsuario(usuario);
+        const carritoStore = useCarritoStore();
+        carritoStore.cargarCarrito();
       }
     },
     isSocio() {

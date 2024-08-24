@@ -82,13 +82,24 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed,onMounted } from 'vue';
 import { useCarritoStore } from '@/stores/carrito';
 import { useProductosStore } from '@/stores/productos';
 import barraNav from '@/components/barraNav.vue';
 import router from '@/router';
+import { useUserStore } from '@/stores/userStore';
+
+
+
 const carritoStore = useCarritoStore();
 const productosStore = useProductosStore();
+const userStore = useUserStore();
+
+onMounted(() => {
+  if (userStore.usuario) {
+    carritoStore.cargarCarrito();
+  }
+});
 
 // Función para eliminar producto del carrito
 const removeFromCart = (ID) => {
@@ -123,14 +134,20 @@ const totalCarrito = computed(() => carritoStore.totalCarrito);
 
 // Función para proceder al pago
 const proceedToPayment = () => {
-if(carritoStore.productos.length<=0){
-  alert('el carrito esta vacio, no puedes proceder');
-    router.push({name: 'Producto'});
-}
-else {
-  router.push({name: 'pago'});
-}
+  const userStore = useUserStore();
 
+  if (!userStore.usuario) {
+    alert('Necesitas iniciar sesión para proceder al pago.');
+    router.push({ name: 'Login' }); // Redirige a la página de inicio de sesión
+    return;
+  }
+
+  if (carritoStore.productos.length <= 0) {
+    alert('El carrito está vacío, no puedes proceder.');
+    router.push({ name: 'Producto' });
+  } else {
+    router.push({ name: 'pago' });
+  }
 };
 
 

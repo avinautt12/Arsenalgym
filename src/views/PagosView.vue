@@ -8,33 +8,6 @@
 
           <!-- Contact Information -->
           <v-card-text>
-            <v-row>
-              <v-col cols="12" class="mb-1">
-                <v-title>Información de Contacto</v-title>
-                <v-text-field
-                  v-model="email"
-                  label="Correo Electrónico"
-                  placeholder="correoelectrónico@ejemplo.com"
-                  outlined
-                  dense
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" class="mt-n5 mb-0">
-                <v-text-field
-                  v-model="phone"
-                  label="Teléfono"
-                  placeholder="55 2112 1789"
-                  outlined
-                  dense
-                  required
-                  :rules="[
-                    v => v.length === 10 || 'El número de teléfono debe tener 10 dígitos'
-                  ]"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-
             <!-- Card Information -->
             <v-row>
               <v-col cols="12">
@@ -145,38 +118,45 @@
 </template>
 
 <script setup>
-
 import { useCarritoStore } from '@/stores/carrito';
+import { useUserStore } from '@/stores/userStore';
 import { ref, computed } from 'vue';
 
 const carritoStore = useCarritoStore();
+const userStore = useUserStore();
+
 const totalCarrito = computed(() => carritoStore.totalCarrito);
 
-const email = ref('');
-const phone = ref('');
+// Campos del formulario
 const cardNumber = ref('');
 const expiry = ref('');
 const cvc = ref('');
 const cardHolder = ref('');
 const postalCode = ref('');
 
+// Procesar pago
 const procesarPago = async () => {
+  console.log('Usuario en userStore:', userStore.usuario);
+  const idCliente = userStore.usuario.ID_CLIENTES; 
+  
+  if (!idCliente) {
+    alert('No se ha encontrado el ID del cliente.');
+    return;
+  }
+  
   try {
-    const response = await fetch('/pago', {
+    const response = await fetch('http://mipagina.com/carrito', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: email.value,
-        phone: phone.value,
-        cardNumber: cardNumber.value,
-        expiry: expiry.value,
-        cvc: cvc.value,
-        cardHolder: cardHolder.value,
-        postalCode: postalCode.value,
-        productos: carritoStore.productos,
-        totalCarrito: totalCarrito.value
+        idCliente: idCliente,
+        carrito: carritoStore.productos.map(producto => ({
+          idProducto: producto.ID,
+          Cantidad: producto.cantidad,
+          Precio: producto.PRECIO
+        }))
       })
     });
 
@@ -193,12 +173,11 @@ const procesarPago = async () => {
     console.error('Error en la solicitud de pago', error);
     alert('Hubo un error al procesar el pago');
   }
-}
-
+};
 </script>
 
 <style scoped>
-.regresar{
+.regresar {
   top: 10px;
 }
 
