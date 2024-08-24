@@ -9,27 +9,18 @@ export const useCarritoStore = defineStore('carrito', {
       localStorage.setItem('carrito', JSON.stringify(this.productos));
     },
     addProducto(producto) {
-      // Buscar si el producto ya está en el carrito
       const existingProduct = this.productos.find(p => p.ID === producto.ID);
-    
       if (existingProduct) {
-        // Si el producto existe, verificar si se puede aumentar la cantidad
         if (existingProduct.cantidad < producto.STOCK) {
           existingProduct.cantidad += 1;
         } else {
-          // Si la cantidad alcanza el stock, quizás manejar esto de alguna manera
           console.log("No se puede añadir más de lo que hay en stock");
         }
       } else {
-        // Si el producto no existe en el carrito, agregarlo con cantidad inicial de 1
-        console.log(this.productos)
         this.productos.push({ ...producto, cantidad: 1 });
       }
-    
-      // Guardar el carrito en el almacenamiento local
       this.saveToLocalStorage();
     },
-    
     removeProducto(ID) {
       const productIndex = this.productos.findIndex(p => p.ID === ID);
       if (productIndex !== -1) {
@@ -53,11 +44,9 @@ export const useCarritoStore = defineStore('carrito', {
     },
     updateCantidad(ID, cantidad) {
       const product = this.productos.find(p => p.ID === ID);
-      if (product) {
-        if (cantidad >= 1 && cantidad <= product.STOCK) {
-          product.cantidad = cantidad;
-          this.saveToLocalStorage();
-        }
+      if (product && cantidad >= 1 && cantidad <= product.STOCK) {
+        product.cantidad = cantidad;
+        this.saveToLocalStorage();
       }
     },
     clearCarrito() {
