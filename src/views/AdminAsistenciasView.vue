@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/valid-v-slot -->
 <template>
   <div id="admin-inicio">
     <BarraAdminNew></BarraAdminNew>

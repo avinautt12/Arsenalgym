@@ -1,3 +1,4 @@
+<!-- eslint-disable no-unused-vars -->
 <template>
   <v-app>
     <v-layout class="rounded rounded-md" style="background-color: #f0f0f0; min-height: 100vh;">
@@ -126,11 +127,13 @@ const router = useRouter();
 const userStore = useUserStore();
 
 
-// Snackbar variables
+
 const snackbar = ref(false);
 const snackbarMessage = ref('');
 const snackbarColor = ref('success'); 
 
+
+// eslint-disable-next-line no-unused-vars
 const calcularEdad = (fechaNacimiento) => {
   const hoy = new Date();
   const fechaNac = new Date(fechaNacimiento);
