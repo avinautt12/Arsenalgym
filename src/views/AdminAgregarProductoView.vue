@@ -160,7 +160,6 @@ const submitForm = async () => {
       color: 'success'
     };
 
-    // Agregar un pequeño retraso antes de redirigir
     setTimeout(() => {
       router.push('adminproductos');
     }, 1500); 

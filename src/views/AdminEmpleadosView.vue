@@ -18,14 +18,15 @@
           :headers="headers"
           :items="empleados"
           :search="search"
+          @click:row="selectEmpleado"
         ></v-data-table>
         <div class="acciones">
-          <v-btn color="primary" class="agregar-btn small-btn">
+          <v-btn color="primary" class="agregar-btn">
             <router-link to="/registrarempleados" class="router-link">
-              Registrar Empleado
+              Agregar Empleado
             </router-link>
           </v-btn>
-          <v-btn color="red" @click="openDeleteModal" class="small-btn">Eliminar Empleado</v-btn>
+          <v-btn color="red" @click="openDeleteModal">Eliminar Empleado</v-btn>
         </div>
       </div>
     </div>
@@ -34,9 +35,9 @@
     <v-dialog v-model="deleteDialog" max-width="500px">
       <v-card>
         <v-card-title class="headline">Eliminar Empleado</v-card-title>
-        <v-card-subtitle>Introduce el ID del Empleado para eliminar</v-card-subtitle>
+        <v-card-subtitle>Introduce el ID del empleado para eliminar</v-card-subtitle>
         <v-card-text>
-          <v-text-field v-model="deleteId" label="ID del Producto" />
+          <v-text-field v-model="deleteId" label="ID del Empleado" />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -45,6 +46,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Snackbar para mensajes de éxito -->
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="3000"
+      :color="snackbar.color"
+      top
+      multi-line
+    >
+      {{ snackbar.message }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -57,57 +69,83 @@ const search = ref('');
 const empleados = ref([]);
 const deleteDialog = ref(false);
 const deleteId = ref('');
+const snackbar = ref({
+  show: false,
+  message: '',
+  color: 'success'
+});
 
-const mostrarempleados = () => {
+// Llama a la API para obtener la lista de empleados
+const mostrarEmpleados = () => {
   fetch('http://mipagina.com/empleados')
     .then(response => response.json())
     .then(json => {
-      if (json.status == 200) {
+      if (json.status === 200) {
         empleados.value = json.data;
+      } else {
+        snackbar.value = {
+          show: true,
+          message: 'Error al cargar empleados: ' + json.message,
+          color: 'error'
+        };
       }
     });
 };
 
+// Abre el modal para eliminar empleado
 const openDeleteModal = () => {
-deleteDialog.value = true;
+  deleteDialog.value = true;
 };
 
+// Selecciona el empleado a eliminar
+const selectEmpleado = (item) => {
+  deleteId.value = item.id;
+};
+
+// Elimina el empleado seleccionado
 const deleteEmpleado = () => {
   if (!deleteId.value) {
-    alert('Por favor, ingresa un ID del empleado.');
-    return;
-  }
-
-  // Verificar si el ID existe en la lista de empleados
-  const empleadoExiste = empleados.value.some(empleado => empleado.id === deleteId.value);
-  if (!empleadoExiste) {
-    alert('El ID del empleado ingresado no existe.');
+    snackbar.value = {
+      show: true,
+      message: 'Por favor, ingresa un ID del empleado.',
+      color: 'error'
+    };
     return;
   }
 
   fetch(`http://mipagina.com/empleado/eliminar?id=${deleteId.value}`, {
     method: 'DELETE',
   })
-    .then(response => {
-      return response.json(); // Asegúrate de que la respuesta sea JSON
-    })
+    .then(response => response.json())
     .then(json => {
-      if (json.success) {
-        alert('Empleado eliminado con éxito');
+      if (json.status === 200 || json.success) {
+        snackbar.value = {
+          show: true,
+          message: 'Empleado eliminado con éxito',
+          color: 'success'
+        };
         deleteDialog.value = false;
-        mostrarempleados(); // Refrescar la lista de empleados
+        mostrarEmpleados(); // Refresca la lista de empleados
       } else {
-        alert('Error al eliminar el empleado: ' + json.message);
+        snackbar.value = {
+          show: true,
+          message: 'Error al eliminar el empleado: ' + (json.message || 'Respuesta inesperada del servidor'),
+          color: 'error'
+        };
       }
     })
     .catch(error => {
-      alert('Error al eliminar el empleado: ' + error.message);
+      snackbar.value = {
+        show: true,
+        message: 'Error al eliminar el empleado: ' + error.message,
+        color: 'error'
+      };
     });
 };
 
-
+// Carga la lista de empleados cuando el componente se monta
 onMounted(() => {
-  mostrarempleados();
+  mostrarEmpleados();
 });
 </script>
 
@@ -116,6 +154,15 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+
+.navbar {
+  background-color: #333;
+  padding: 1rem;
+}
+
+.logo {
+  max-height: 50px;
 }
 
 .contenedor {
@@ -141,19 +188,12 @@ onMounted(() => {
 
 .acciones {
   display: flex;
-  align-items: center;
+  justify-content: flex-start;
   margin-top: 1rem;
 }
 
-.small-btn {
-  font-size: 14px;
-  padding: 0.5rem 1rem;
-  min-width: auto;
-  width: auto;
-}
-
 .agregar-btn {
-  margin-right: 0.5rem;
+  margin-right: 1rem;
 }
 
 .router-link {
@@ -161,4 +201,3 @@ onMounted(() => {
   color: inherit;
 }
 </style>
-   
