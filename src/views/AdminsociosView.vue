@@ -55,7 +55,11 @@ const exportToPDF = () => {
     pdf.setFontSize(18);
     pdf.text('Reporte de Socios', 10, 20);
     pdf.addImage(imgData, 'PNG', 10, 30, 190, 0); // Ajusta el tamaño y posición según necesites
+<<<<<<< HEAD
+    pdf.save('Socios_Activos.pdf');
+=======
     pdf.save('data-table.pdf');
+>>>>>>> 0807cd8fc2d7e9a7fcfd3dec184c98a7832baf66
   });
 };
 

@@ -195,7 +195,7 @@ const router = createRouter({
       path: '/pagomembresia',
       name: 'pagomembresia',
       component: PagoMembresiaView
-    }  
+    }
   ]
 })
 
