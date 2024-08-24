@@ -104,7 +104,8 @@ const router = createRouter({
     {
       path: '/perfil',
       name: 'perfilusuario',
-      component: PerfilUsuarioView
+      component: PerfilUsuarioView,
+      meta: {requiresAuth:true}
     },
     {
       path: '/perfilsocio',
@@ -195,7 +196,7 @@ const router = createRouter({
       path: '/pagomembresia',
       name: 'pagomembresia',
       component: PagoMembresiaView
-    }
+    }  
   ]
 })
 

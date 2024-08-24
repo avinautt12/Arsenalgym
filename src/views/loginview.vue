@@ -68,7 +68,7 @@ const ingresarFormulario = async () => {
     
     const result = await response.json();
     if (identificador.value === 'Peniche1234' && contrasena.value === '123456') {
-    router.push({ name: 'admininicio' });
+    router.push({ name: 'AdminInicio' });
     return;
   }
 

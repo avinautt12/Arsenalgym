@@ -1,4 +1,3 @@
-<!-- eslint-disable no-unused-vars -->
 <template>
   <v-app>
     <v-layout class="rounded rounded-md" style="background-color: #f0f0f0; min-height: 100vh;">
@@ -120,6 +119,22 @@ const router = useRouter();
 
 const userStore = useUserStore();
 
+// Snackbar variables
+const snackbar = ref(false);
+const snackbarMessage = ref('');
+const snackbarColor = ref('success'); 
+
+const calcularEdad = (fechaNacimiento) => {
+  const hoy = new Date();
+  const fechaNac = new Date(fechaNacimiento);
+  let edad = hoy.getFullYear() - fechaNac.getFullYear();
+  const mes = hoy.getMonth() - fechaNac.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+    edad--;
+  }
+  return edad;
+};
+
 const datosBasicosCompletos = computed(() => {
   return (
     nombre.value &&
@@ -166,7 +181,7 @@ const registrar = async () => {
 
       const result = await response.json();
 
-      console.log('Resultado del servidor:', result);
+      console.log('Resultado del servidor:', result); // Añade esta línea para depurar
 
       if (response.ok && result.success) {
         userStore.setUsuario({
@@ -225,12 +240,12 @@ const registrar = async () => {
 
 .titulo-formulario {
   text-align: center;
-  color: black; 
+  color: black; /* Color de título oscuro */
   font-size: 24px;
   margin-bottom: 20px;
 }
 
 .card-form {
-  border-radius: 15px; 
+  border-radius: 15px; /* Bordes redondeados para la tarjeta */
 }
 </style>

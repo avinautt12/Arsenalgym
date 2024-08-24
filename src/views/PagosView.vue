@@ -118,26 +118,33 @@
 </template>
 
 <script setup>
-
 import { useCarritoStore } from '@/stores/carrito';
+import { useUserStore } from '@/stores/userStore';
 import { ref, computed } from 'vue';
 
 const carritoStore = useCarritoStore();
+const userStore = useUserStore();
+
 const totalCarrito = computed(() => carritoStore.totalCarrito);
 
-const email = ref(''); // Si tienes un campo para el email, por ejemplo
-const phone = ref(''); // Si tienes un campo para el teléfono, por ejemplo
+// Campos del formulario
 const cardNumber = ref('');
 const expiry = ref('');
 const cvc = ref('');
 const cardHolder = ref('');
 const postalCode = ref('');
 
+// Procesar pago
 const procesarPago = async () => {
+  console.log('Usuario en userStore:', userStore.usuario);
+  const idCliente = userStore.usuario.ID_CLIENTES; 
+  
+  if (!idCliente) {
+    alert('No se ha encontrado el ID del cliente.');
+    return;
+  }
+  
   try {
-    // Obtenemos el idCliente de la tienda del carrito si está disponible
-    const idCliente = 'C0001'; // Cambia esto por la forma en la que obtienes el idCliente
-
     const response = await fetch('http://mipagina.com/carrito', {
       method: 'POST',
       headers: {
@@ -166,12 +173,11 @@ const procesarPago = async () => {
     console.error('Error en la solicitud de pago', error);
     alert('Hubo un error al procesar el pago');
   }
-}
-
+};
 </script>
 
 <style scoped>
-.regresar{
+.regresar {
   top: 10px;
 }
 
