@@ -35,7 +35,7 @@
         <v-col cols="auto" class="d-flex justify-end align-center">
           <v-row no-gutters>
             <v-col cols="auto">
-              <router-link v-if="userStore.usuario" :to="userStore.isSocio() ? '/miinfo' : '/perfil'">
+              <router-link v-if="userStore.usuario" :to="userStore.isSocio() ? '/miinfo' : '/perfilusuario'">
                 <v-btn icon class="boton-bar">
                   <v-icon>mdi-account</v-icon>
                 </v-btn>

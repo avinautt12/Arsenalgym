@@ -15,6 +15,8 @@ export const useCarritoStore = defineStore('carrito', {
         } else {
           this.productos = [];
         }
+      } else {
+        this.productos = [];
       }
     },
     guardarCarrito() {
@@ -28,7 +30,6 @@ export const useCarritoStore = defineStore('carrito', {
       if (existingProduct) {
         existingProduct.cantidad++;
       } else {
-        // Asegúrate de que cantidad se inicialice en 1 si es un nuevo producto
         this.productos.push({ ...producto, cantidad: 1 });
       }
       this.guardarCarrito();

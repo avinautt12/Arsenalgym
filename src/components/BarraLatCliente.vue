@@ -17,15 +17,8 @@
         @mouseleave="restaurarColorboton('info')"
         :color="coloresBotones.info"
       >Mi Perfil</v-btn>
-      <v-btn
-        class="botones"
-        @mouseover="activarColorGris('compras')"
-        @mouseleave="restaurarColorboton('compras')"
-        :color="coloresBotones.compras"
-        @click="compras"
-      >Mis Compras</v-btn>
-      <v-btn
-        class="botones"
+      <v-btn router-link to="/miscompras"
+        class="botones" 
         @mouseover="activarColorGris('historial')"
         @mouseleave="restaurarColorboton('historial')"
         :color="coloresBotones.historial"

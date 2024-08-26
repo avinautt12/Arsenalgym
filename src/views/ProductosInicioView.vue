@@ -13,7 +13,7 @@
         <v-row>
           <v-col v-for="producto in filteredProductos" :key="producto.ID" cols="12" md="6" lg="4">
             <v-card class="producto-card mx-auto my-4">
-              <v-img :src="producto.IMAGEN" class="producto-img" aspect-ratio="16/9" contain @error="handleImageError"></v-img>
+              <v-img :src="`http://mipagina.com/${producto.IMAGEN}`" class="producto-img" aspect-ratio="16/9" contain @error="handleImageError"></v-img>
               <v-card-title>{{ producto.NOMBRE }}</v-card-title>
               <v-card-subtitle>{{ producto.CATEGORIA }}</v-card-subtitle>
               <v-card-text>

@@ -9,24 +9,26 @@
           <v-text-field
             v-model="nombre"
             label="Nombre"
-            :rules="[rules.required]"
+            :rules="[v => !!v || 'Nombre es requerido', v => /^[a-zA-Z\s]+$/.test(v) || 'Nombre no debe contener números']"
             required
           ></v-text-field>
 
           <v-text-field
             v-model="apellidos"
             label="Apellidos"
-            :rules="[rules.required]"
+            :rules="[v => !!v || 'Nombre es requerido', v => /^[a-zA-Z\s]+$/.test(v) || 'Nombre no debe contener números']"
             required
           ></v-text-field>
 
           <v-text-field
-  v-model="fechaNacimiento"
-  label="Fecha de Nacimiento"
-  type="date"
-  :rules="[rules.required, rules.minAge]"
-  required
-></v-text-field>
+            v-model="fechaNacimiento"
+            label="Fecha de Nacimiento"
+            type="date"
+            :rules="[v => !!v || 'Fecha de nacimiento es requerida',
+                             v => calcularEdad(v) >= 20 || 'Debes tener al menos 20 años',
+                             v => calcularEdad(v) <= 85 || 'Debes tener como máximo 85 años']"
+            required
+          ></v-text-field>
           <v-select
             v-model="sexo"
             :items="sexos"
@@ -130,6 +132,17 @@ const snackbar = ref({
   message: '',
   color: 'success'
 });
+
+const calcularEdad = (fechaNacimiento) => {
+  const hoy = new Date();
+  const fechaNac = new Date(fechaNacimiento);
+  let edad = hoy.getFullYear() - fechaNac.getFullYear();
+  const mes = hoy.getMonth() - fechaNac.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+    edad--;
+  }
+  return edad;
+};
 
 // Lista de opciones para el campo "Sexo"
 const sexos = ref(['Masculino', 'Femenino']);

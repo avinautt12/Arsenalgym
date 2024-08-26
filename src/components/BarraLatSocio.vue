@@ -74,13 +74,6 @@
         :color="coloresBotones1.novedades"
       >Novedades</v-btn>
 
-      <v-btn
-        class="botones"
-        @mouseover="activarColorGris('membresia')"
-        @mouseleave="restaurarColorboton('membresia')"
-        :color="coloresBotones1.membresia"
-      >Membresia</v-btn>
-
       <v-btn router-link to="/clases"
         class="botones"
         @mouseover="activarColorGris('clases')"
@@ -88,7 +81,7 @@
         :color="coloresBotones1.clases"
       >Clases</v-btn>
 
-      <v-btn
+      <v-btn router-link to="/miscompras"
         class="botones"
         @mouseover="activarColorGris('historial')"
         @mouseleave="restaurarColorboton('historial')"

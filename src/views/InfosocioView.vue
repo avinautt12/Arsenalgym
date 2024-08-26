@@ -7,11 +7,14 @@
         <v-col cols="12" md="8" class="ma-0">
           <v-card class="pa-5 profile-card">
             <v-card-title class="titulo">
-              Bienvenido, {{ userStore.usuario.nombre }} {{ userStore.usuario.apellido }}
+              Bienvenido Socio, {{ userStore.usuario.nombre }} {{ userStore.usuario.apellido }}
               <v-icon class="ml-2">mdi-account</v-icon>
             </v-card-title>
             <v-card-subtitle class="info">
               Correo: {{ userStore.usuario.correo }}
+            </v-card-subtitle>
+            <v-card-subtitle class="info">
+              ID DE SOCIO: {{ userStore.usuario.id_socio }}
             </v-card-subtitle>
           </v-card>
         </v-col>
@@ -122,7 +125,7 @@ const handleCerrarSesion = () => {
 }
 
 .titulo {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: bold;
   color: white;
   text-align: left; /* Alinea el texto a la izquierda */

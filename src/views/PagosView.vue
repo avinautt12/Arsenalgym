@@ -5,10 +5,7 @@
         <v-card>
           <v-img src="arsepago.png" alt="Arsenal Image" class="arsepago"></v-img>
           <v-divider class="my-3"></v-divider>
-
-          <!-- Contact Information -->
           <v-card-text>
-            <!-- Card Information -->
             <v-row>
               <v-col cols="12">
                 <v-title>Información de la Tarjeta</v-title>
@@ -94,7 +91,7 @@
             <!-- Submit Button -->
             <v-row>
               <v-col cols="12">
-                <v-btn color="primary" block @click="procesarPago">
+                <v-btn color="primary" block @click="confirmarPago" :disabled="!isFormValid">
                   Realizar Pago
                 </v-btn>
                 <v-btn router-link to="/carrito" class="regresar" color="red" block="">
@@ -114,13 +111,33 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Confirmación de Pago -->
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Confirmar Pago</span>
+        </v-card-title>
+        <v-card-text>
+          <p class="text-subtitle-1">
+            ¿Estás seguro de proceder? No habrá devoluciones.
+          </p>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="procesarPago">Sí, Proceder</v-btn>
+          <v-btn color="red" @click="dialog = false">No, Regresar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
 import { useCarritoStore } from '@/stores/carrito';
 import { useUserStore } from '@/stores/userStore';
-import { ref, computed } from 'vue';
+import router from '@/router';
 
 const carritoStore = useCarritoStore();
 const userStore = useUserStore();
@@ -134,16 +151,36 @@ const cvc = ref('');
 const cardHolder = ref('');
 const postalCode = ref('');
 
+// Diálogo de confirmación
+const dialog = ref(false);
+
+// Computada para validar el formulario
+const isFormValid = computed(() => {
+  const cardNumberValid = cardNumber.value.length === 16 && /^[0-9]+$/.test(cardNumber.value);
+  const expiryValid = /^[0-9]{2}\/[0-9]{2}$/.test(expiry.value);
+  const cvcValid = cvc.value.length === 3 && /^[0-9]+$/.test(cvc.value);
+  const cardHolderValid = cardHolder.value.trim() !== '';
+  const postalCodeValid = postalCode.value.length === 5 && /^[0-9]+$/.test(postalCode.value);
+
+  return cardNumberValid && expiryValid && cvcValid && cardHolderValid && postalCodeValid;
+});
+
+// Mostrar diálogo de confirmación
+const confirmarPago = () => {
+  if (isFormValid.value) {
+    dialog.value = true;
+  }
+};
+
 // Procesar pago
 const procesarPago = async () => {
-  console.log('Usuario en userStore:', userStore.usuario);
-  const idCliente = userStore.usuario.ID_CLIENTES; 
+  const idCliente = userStore.usuario?.ID_CLIENTES;
   
   if (!idCliente) {
     alert('No se ha encontrado el ID del cliente.');
     return;
   }
-  
+
   try {
     const response = await fetch('http://mipagina.com/carrito', {
       method: 'POST',
@@ -160,18 +197,28 @@ const procesarPago = async () => {
       })
     });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error en la respuesta del servidor:', errorData);
+      alert(`Hubo un error en el servidor: ${errorData.message || 'Error desconocido'}`);
+      return;
+    }
+
     const result = await response.json();
 
     if (result.success) {
       alert('Pago realizado con éxito');
-      carritoStore.clearCarrito(); // Limpiar el carrito
-      // Redirigir o realizar otras acciones
+      carritoStore.clearCarrito();
+      router.push({ path: '/carrito' });
     } else {
-      alert('Error al procesar el pago: ' + result.message);
+      console.error('Error en el procesamiento del pago:', result);
+      alert(`Hubo un problema con el pago: ${result.message || 'Error desconocido'}`);
     }
   } catch (error) {
     console.error('Error en la solicitud de pago', error);
-    alert('Hubo un error al procesar el pago');
+    alert('Hubo un error al procesar el pago. Por favor, inténtalo de nuevo.');
+  } finally {
+    dialog.value = false;
   }
 };
 </script>
